@@ -21,13 +21,15 @@ namespace TransportLogistika.BL
             Database.EnsureDeleted();
             Database.EnsureCreated();
         }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server = USER-PC\MSSQLSERVER01; Database = TransportLogistikadb; Trusted_Connection = True;");
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           // modelBuilder.Entity<User>(UserConfigure); //way 1 (using the method)
+            modelBuilder.Entity<User>(UserConfigure); //way 1 (using the method)
 
             modelBuilder.ApplyConfiguration(new DriverConfiguration()); //way 2 (using the class)
         }
@@ -35,11 +37,10 @@ namespace TransportLogistika.BL
         //Configuretion for class User
         public void UserConfigure(EntityTypeBuilder<User> builder)
         {
-           // builder.ToTable("Users").Property(u => u.data).HasComputedColumnSql("Login || ' ' || Password");
             builder.ToTable("Users").Property(u => u.CreateAt).HasDefaultValueSql("GETDATE('now')");
         }
     }
-
+    
     //Configuretion for class Driver
     public class DriverConfiguration : IEntityTypeConfiguration<Driver>
     {
@@ -47,7 +48,6 @@ namespace TransportLogistika.BL
         {
             builder.ToTable("Drivers").Property(d => d.FistName).HasMaxLength(20);
             builder.ToTable("Drivers").Property(d => d.LastName).HasMaxLength(20);
-        //    builder.ToTable("Drivers").Property(d => d.FistName).HasComputedColumnSql("FistName || ' ' || LastName");
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace TransportLogistika.BL
 {
@@ -16,5 +17,8 @@ namespace TransportLogistika.BL
         public string? Website { get; set; }
         public string WhichRegion { get; set; } = "";
         public string HourPay { get; set; } = "";
+
+        public List<Truck> Trucks { get; set; } = new();
+
     }
 }

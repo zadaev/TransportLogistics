@@ -7,17 +7,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TransportLogistika.BL
 {
+    /// <summary>
+    ///  Class for working with the database
+    /// </summary>
     public class WorkWithTLDB
     {
-        public static void CreateUser()
+        public static void Create()
         {
-            using (TLContext context = new TLContext())
-            {
-                
-                User tom = new User() { Login = "ozi", Password = "12345" };
-                context.Add(tom);
-                context.SaveChanges();
-            }
+
+        }
+
+        public static void Read()
+        {
+
+        }
+
+        public static void Edit()
+        {
+
+        }
+
+        public static void Delate()
+        {
+
         }
     }
 }

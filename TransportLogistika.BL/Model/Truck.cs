@@ -18,5 +18,7 @@ namespace TransportLogistika.BL
         public bool Status { get; set; }
         public string CurrentRegion { get; set; } = "";
 
+        public Driver? Driver { get; set; }
+        public Service? Service { get; set; }
     }
 }
