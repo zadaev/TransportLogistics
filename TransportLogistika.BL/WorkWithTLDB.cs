@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TransportLogistika.BL
 {
-    public class WWTL
+    public class WorkWithTLDB
     {
         public static void CreateUser()
         {
