@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 namespace TransportLogistika.BL
 {
+    [Serializable]
     public class Driver
     {
         public Guid Id { get; set; } = new Guid();
@@ -17,10 +18,9 @@ namespace TransportLogistika.BL
         public string Category { get; set; } = "";
         public string Country { get; set; } = "";
         public string Region { get; set; } = "";
-        public string Addrress { get; set; } = "";
+        public string Addrress { get { return Country + " " + Region; } } 
 
         public List<Truck> Trucks { get; set; } = new();
 
     }
-  
 }

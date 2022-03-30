@@ -14,11 +14,8 @@ namespace TransportLogistika.BL
         public string MType { get; set; } = "";
         public string Category { get; set; } = "";
         public int GrossWeigh { get; set; }
-        public string Year { get; set; } = "";
-        public bool Status { get; set; }
+        public DateTime Year { get; set; }
         public string CurrentRegion { get; set; } = "";
 
-        public Driver? Driver { get; set; }
-        public Service? Service { get; set; }
     }
 }

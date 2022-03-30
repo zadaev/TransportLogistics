@@ -13,7 +13,7 @@ namespace TransportLogistika.BL
         public string Password { get; set; } = "";
         public string? Data { get; set; }
         public bool Status { get; set; }
-        public DateTime CreateAt { get; set; }
+        public DateTime CreateAt { get; set; } = DateTime.Now;
       
         public Service? Services { get; set; }
         public Driver? Driver { get; set; }
