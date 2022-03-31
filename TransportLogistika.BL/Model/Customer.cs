@@ -7,7 +7,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TransportLogistika.BL
 {
-    [Serializable]
     public class Customer
     {
         public int Id { get; set; }
@@ -19,7 +18,10 @@ namespace TransportLogistika.BL
         public string Message { get; set; } = "";
         public string Country { get; set; } = "";
         public string Region { get; set; } = "";
-        public string Addrress { get { return Country + " " + Region; } }
+        public string Addrress { get; set; } = "";
+
+        public uint UserId { get; set; }
+        public User? User { get; set; }
 
     }
 }

@@ -10,11 +10,11 @@ namespace TransportLogistika.BL
 {
     public class TLContext : DbContext
     {
-        public DbSet<User> Users { get; set; } = null!;
-        public DbSet<Driver> Drivers { get; set; } = null!;
-        public DbSet<Truck> Trucks { get; set; } = null!;
-        public DbSet<Customer> Customers { get; set; } = null!;
-        public DbSet<Service> Services { get; set; } = null!;
+        public DbSet<User> User { get; set; } = null!;
+        public DbSet<Driver> Driver { get; set; } = null!;
+        public DbSet<Truck> Truck { get; set; } = null!;
+        public DbSet<Customer> Customer { get; set; } = null!;
+        public DbSet<Service> Service { get; set; } = null!;
 
         public TLContext()
         {
@@ -29,7 +29,7 @@ namespace TransportLogistika.BL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(UserConfigure); //way 1 (using the method)
+            //  modelBuilder.Entity<User>(UserConfigure); //way 1 (using the method)
 
             modelBuilder.ApplyConfiguration(new DriverConfiguration()); //way 2 (using the class)
         }
@@ -37,17 +37,24 @@ namespace TransportLogistika.BL
         //Configuretion for class User
         public void UserConfigure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("Users").Property(u => u.CreateAt).HasDefaultValueSql("GETDATE('now')");
+            builder.ToTable("User").Property(u => u.CreateAt).HasDefaultValueSql("GETDATE('now')");
         }
     }
-    
+
     //Configuretion for class Driver
     public class DriverConfiguration : IEntityTypeConfiguration<Driver>
     {
         public void Configure(EntityTypeBuilder<Driver> builder)
         {
-            builder.ToTable("Drivers").Property(d => d.FistName).HasMaxLength(20);
-            builder.ToTable("Drivers").Property(d => d.LastName).HasMaxLength(20);
+            builder.ToTable("Driver").Property(d => d.FistName).HasMaxLength(20);
+            builder.ToTable("Driver").Property(d => d.LastName).HasMaxLength(20);
+            builder.ToTable("Driver").Property(d => d.PhoneNumber_1).HasDefaultValue(15);
+            builder.ToTable("Driver").Property(d => d.PhoneNumber_2).HasDefaultValue(15);
+            builder.ToTable("Driver").Property(d => d.Email).HasDefaultValue(2000);
+            builder.ToTable("Driver").Property(d => d.Category).HasDefaultValue(30);
+            builder.ToTable("Driver").Property(d => d.Country).HasDefaultValue(50);
+            builder.ToTable("Driver").Property(d => d.Region).HasDefaultValue(100);
+
         }
     }
 

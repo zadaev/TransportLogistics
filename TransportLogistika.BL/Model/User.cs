@@ -6,18 +6,17 @@ using System.Threading.Tasks;
 
 namespace TransportLogistika.BL
 {
+    [Serializable]
     public class User
     {
-        public Guid Id { get; set; } = new Guid();
+        public uint Id { get; set; } 
         public string Login { get; set; } = "";
         public string Password { get; set; } = "";
         public string? Data { get; set; }
-        public bool Status { get; set; }
         public DateTime CreateAt { get; set; } = DateTime.Now;
-      
-        public Service? Services { get; set; }
-        public Driver? Driver { get; set; }
-        public Customer? Customer { get; set; }
 
+        public List<User> Users { get; set; } = new();
+        public List<Service> Services { get; set; } = new();
+        public List<Customer> Customers { get; set; } = new();
     }
 }

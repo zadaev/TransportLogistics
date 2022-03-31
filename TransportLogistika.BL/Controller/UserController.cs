@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 
 namespace TransportLogistika.BL
 {
+    /*
     /// <summary>
     /// Контроллер пользователя.
     /// </summary>
@@ -15,12 +16,15 @@ namespace TransportLogistika.BL
     {
         public User User { get; set; }
 
-        public UserController(User user)
+        public UserController(string userLogin,string userPassword)
         {
+            // TODO: Проверка
+
+            var user = new User(userLogin,userPassword);
             this.User = user ?? throw new ArgumentNullException("Ползователь не может быть равен Null", nameof(user));
         }
 
-        readonly XmlSerializer serializer = new XmlSerializer(typeof(User));
+         XmlSerializer serializer = new XmlSerializer(typeof(User));
 
         /// <summary>
         /// Сохранить данные пользователя.
@@ -36,12 +40,15 @@ namespace TransportLogistika.BL
         /// <summary>
         /// Почучить данные пользовотеля.
         /// </summary>
-        public void Load()
+        public UserController ()
         {
             using (var fs = new FileStream("users.xml", FileMode.OpenOrCreate))
             {
-                User = serializer.Deserialize(fs) as User ?? throw new ArgumentNullException("NUll",nameof(User));
+
+                User = serializer.Deserialize(fs) as User ?? throw new ArgumentNullException("Ползователя нету",nameof(User));
             }
         }
     }
+    */
+
 }

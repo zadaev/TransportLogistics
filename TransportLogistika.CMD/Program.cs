@@ -7,7 +7,7 @@ namespace TransportLogistika.CMD
     {
         static void Main()
         {
-           
+            Create.CreateUser();
         }
     }
 }

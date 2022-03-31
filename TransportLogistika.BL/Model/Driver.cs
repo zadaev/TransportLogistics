@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 namespace TransportLogistika.BL
 {
-    [Serializable]
     public class Driver
     {
-        public Guid Id { get; set; } = new Guid();
+        public uint Id { get; set; }
         public string FistName { get; set; } = "";
         public string LastName { get; set; } = "";
         public string PhoneNumber_1 { get; set; } = "";
@@ -18,9 +17,22 @@ namespace TransportLogistika.BL
         public string Category { get; set; } = "";
         public string Country { get; set; } = "";
         public string Region { get; set; } = "";
-        public string Addrress { get { return Country + " " + Region; } } 
+        public string Address { get; set; } = "";
+  
+        public List<Truck> Truck { get; set; } = new();
 
-        public List<Truck> Trucks { get; set; } = new();
+        public uint UserId { get; set; }
+        public User? User { get; set; }
+
+        public override string ToString()
+        {
+            return $"Имя - {FistName}" +
+                $" \nФамилия - {LastName}" +
+                $" \nНомер Телефона - {PhoneNumber_1}" +
+                $" \nEmail - {Email}" +
+                $" \nКатегория - {Category}" +
+                $" \nСтрана - {Address}";
+        }
 
     }
 }
