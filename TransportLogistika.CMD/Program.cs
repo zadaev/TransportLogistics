@@ -7,7 +7,21 @@ namespace TransportLogistika.CMD
     {
         static void Main()
         {
-            Create.CreateUser();
+            while (true)
+            {
+                try
+                {
+                    WorkWithTLDB.GMethod();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                Console.Clear();
+            }
+
+
+
         }
     }
 }

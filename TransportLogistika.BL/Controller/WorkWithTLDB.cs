@@ -12,28 +12,65 @@ namespace TransportLogistika.BL
     /// </summary>
     public class WorkWithTLDB
     {
-
-    }
-    public class Create
-    {
-        public static void CreateUser()
+        public static void GMethod()
         {
+            Console.WriteLine("\n1.Создать \n2.Поиск \n3.Изменить \n4.Удалить");
+
+            switch (Console.ReadLine())
+            {
+                case "1": Create(); break;
+                case "2": Read(); break;
+                case "3": Update(); break;
+                case "4": Delete(); break;
+            }
+
+        }
+        public static void Create()
+        {
+            Create create = new Create();
             Console.WriteLine("Кем вы являетесь? \n1.Водитель \n2.Компания \n3.Клиент \n4.Truck");
             var answer = Console.ReadLine();
 
             switch (answer)
             {
-                case "1": Driver(); break;
-                case "2": Service(); break;
-                case "3": Customer(); break;
-                case "4": Truck(); break;
+                case "1": create.Driver(); break;
+                case "2": create.Service(); break;
+                case "3": create.Customer(); break;
+                case "4": create.Truck(); break;
                 default:
                     Console.WriteLine("Введите чимло(1, 2 или 3)");
                     break;
             }
         }
+        public static void Read()
+        {
+            Read read = new Read();
+            Console.WriteLine("Что ищете? \n1.Водитель \n2.Компания \n3.Клиент \n4.Truck");
+            var answer = Console.ReadLine();
 
-        public static void Driver()
+            switch (answer)
+            {
+                case "1": read.Driver(); break;
+                case "2": read.Service(); break;
+                case "3": read.Customer(); break;
+                case "4": read.Truck(); break;
+                default:
+                    Console.WriteLine("Введите чимло(1, 2 или 3)");
+                    break;
+            }
+        }
+        public static void Update()
+        {
+            throw new ArgumentNullException("Изменить не работаеть", nameof(Update));
+        }
+        public static void Delete()
+        {
+            throw new ArgumentNullException("Удалить не работаеть", nameof(Delete));
+        }
+    }
+    public class Create
+    {
+        public void Driver()
         {
             #region Принимаем данные
 
@@ -94,7 +131,7 @@ namespace TransportLogistika.BL
             }
         }
 
-        public static void Service()
+        public void Service()
         {
             #region Принимаем данные
 
@@ -154,7 +191,7 @@ namespace TransportLogistika.BL
             }
         }
 
-        public static void Truck()
+        public void Truck()
         {
             #region Принимаем данные
             Console.WriteLine("Введите модель");
@@ -200,7 +237,7 @@ namespace TransportLogistika.BL
 
         }
 
-        public static void Customer()
+        public void Customer()
         {
             #region Принимаем данные
 
@@ -255,47 +292,39 @@ namespace TransportLogistika.BL
     }
     public class Read
     {
-        public static void UserRead()
-        {
-            Console.WriteLine("Что ищете? \n1.Водитель \n2.Компания \n3.Клиент \n4.Truck");
-            var answer = Console.ReadLine();
 
-            switch (answer)
-            {
-                case "1": Driver(); break;
-                case "2": Service(); break;
-                case "3": Customer(); break;
-                case "4": Truck(); break;
-                default:
-                    Console.WriteLine("Введите чимло(1, 2 или 3)");
-                    break;
-            }
-        }
-        public static void Driver()
+        public async void Driver()
         {
             Console.WriteLine("С какой страны вам нужен водитель?");
-            var country = Console.ReadLine();
+            string? country = Console.ReadLine();
 
-            using (TLContext db = new TLContext())
-            {
-                var drivers = db.Driver.Where(d => d.Address.Contains(country!));
-                foreach (var d in drivers)
+            if (country != null)
+                using (TLContext db = new TLContext())
                 {
-                    Console.WriteLine
-                        (
-                        $"Имя - {d.FistName}" +
-                        $"\nФамилия - {d.LastName}" +
-                        $"\nНомер телефона - {d.PhoneNumber_1}" +
-                        $"\nEmail - {d.Email}" +
-                        $"\nКатегория - {d.Category}" +
-                        $"\nАдрес - {d.Address}"
-                        );
+                    var drivers = db.Driver.Where(d => d.Address.Contains(country)).ToList();
 
-                    Console.WriteLine(new string('-', 20));
+
+                    foreach (var d in drivers)
+                    {
+                        Console.WriteLine
+                            (
+                            $"Имя - {d.FistName}" +
+                            $"\nФамилия - {d.LastName}" +
+                            $"\nНомер телефона - {d.PhoneNumber_1}" +
+                            $"\nEmail - {d.Email}" +
+                            $"\nКатегория - {d.Category}" +
+                            $"\nАдрес - {d.Address}"
+                            );
+
+                        Console.WriteLine(new string('-', 20));
+                    }
                 }
+            else
+            {
+                throw new Exception($"Нечего нету по {country}");
             }
         }
-        public static void Service()
+        public void Service()
         {
             Console.WriteLine("С какой страны должен быть компания?");
             var country = Console.ReadLine();
@@ -318,7 +347,7 @@ namespace TransportLogistika.BL
                 }
             }
         }
-        public static void Truck()
+        public void Truck()
         {
             Console.WriteLine("С какого региона должен быть Truck");
             var region = Console.ReadLine();
@@ -342,7 +371,7 @@ namespace TransportLogistika.BL
                 }
             }
         }
-        public static void Customer()
+        public void Customer()
         {
             Console.WriteLine("С какого региона должен быть клиент");
             var country = Console.ReadLine();
