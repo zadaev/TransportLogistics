@@ -17,6 +17,8 @@ namespace TransportLogistika.CMD
                 {
                     Console.WriteLine(ex.Message);
                 }
+
+                Console.ReadKey();
                 Console.Clear();
             }
 

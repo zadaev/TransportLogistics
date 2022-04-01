@@ -181,7 +181,7 @@ namespace TransportLogistika.BL
                     Message = Message!,
                     Country = Country!,
                     Region = Region!,
-
+                    Addrress = Country + ", " + Region,
                     User = user
                 };
                 db.Service.Add(service);
@@ -242,11 +242,6 @@ namespace TransportLogistika.BL
             #region Принимаем данные
 
             Console.WriteLine("Вас приветствует приложение TransportLogistics");
-            Console.WriteLine("Введите логин пользователя");
-            var login = Console.ReadLine();
-
-            Console.WriteLine("Введите пароль пользователя.");
-            var password = Console.ReadLine();
 
             Console.WriteLine("Введите Имю");
             var FistName = Console.ReadLine();
@@ -273,7 +268,7 @@ namespace TransportLogistika.BL
 
             using (TLContext db = new TLContext())
             {
-                Customer customer = new Customer
+                var customer = new Customer
                 {
                     FirstName = FistName!,
                     LastName = LastName!,
@@ -281,8 +276,10 @@ namespace TransportLogistika.BL
                     Email = Email!,
                     Message = Message!,
                     Country = Country!,
-                    Region = Region!
+                    Region = Region!,
+                    Addrress = Country + ", " + Region
                 };
+
                 db.Customer.Add(customer);
                 db.SaveChanges();
 
@@ -298,41 +295,42 @@ namespace TransportLogistika.BL
             Console.WriteLine("С какой страны вам нужен водитель?");
             string? country = Console.ReadLine();
 
-            if (country != null)
-                using (TLContext db = new TLContext())
-                {
-                    var drivers = db.Driver.Where(d => d.Address.Contains(country)).ToList();
+            if (string.IsNullOrWhiteSpace(country))
+                throw new Exception($"Названия страны не может быть пустым");
 
-
-                    foreach (var d in drivers)
-                    {
-                        Console.WriteLine
-                            (
-                            $"Имя - {d.FistName}" +
-                            $"\nФамилия - {d.LastName}" +
-                            $"\nНомер телефона - {d.PhoneNumber_1}" +
-                            $"\nEmail - {d.Email}" +
-                            $"\nКатегория - {d.Category}" +
-                            $"\nАдрес - {d.Address}"
-                            );
-
-                        Console.WriteLine(new string('-', 20));
-                    }
-                }
-            else
+            await using (TLContext db = new TLContext())
             {
-                throw new Exception($"Нечего нету по {country}");
+                var drivers = db.Driver.Where(d => d.Address.Contains(country)).ToList();
+
+                foreach (var d in drivers)
+                {
+                    Console.WriteLine
+                        (
+                        $"Имя - {d.FistName}" +
+                        $"\nФамилия - {d.LastName}" +
+                        $"\nНомер телефона - {d.PhoneNumber_1}" +
+                        $"\nEmail - {d.Email}" +
+                        $"\nКатегория - {d.Category}" +
+                        $"\nАдрес - {d.Address}"
+                        );
+
+                    Console.WriteLine(new string('-', 20));
+                }
             }
+
         }
-        public void Service()
+        public async void Service()
         {
             Console.WriteLine("С какой страны должен быть компания?");
             var country = Console.ReadLine();
 
-            using (TLContext db = new TLContext())
+            if (string.IsNullOrWhiteSpace(country))
+                throw new Exception($"Названия страны не может быть пустым");
+
+            await using (TLContext db = new TLContext())
             {
-                var Service = db.Service.Where(s => s.Addrress!.Contains(country!));
-                foreach (var s in Service)
+                var service = db.Service.Where(s => s.Addrress.Contains(country));
+                foreach (var s in service)
                 {
                     Console.WriteLine
                         ($"Имя - {s.Name} " +
@@ -378,17 +376,17 @@ namespace TransportLogistika.BL
 
             using (TLContext db = new TLContext())
             {
-                var customers = db.Customer.Where(c => c.Country.Contains(country!));
+                var customers = db.Customer.Where(c => c.Addrress!.Contains(country!));
                 foreach (var c in customers)
                 {
                     Console.WriteLine
                         (
                         $"Имя - {c.FirstName}" +
-                        $"Фамилия - {c.LastName}" +
-                        $"Номер телефона - {c.PhoneNumber_1}" +
-                        $"Email - {c.Email}" +
-                        $"Описяния - {c.Message}" +
-                        $"Aдрес - {c.Addrress}"
+                        $"\nФамилия - {c.LastName}" +
+                        $"\nНомер телефона - {c.PhoneNumber_1}" +
+                        $"\nEmail - {c.Email}" +
+                        $"\nОписяния - {c.Message}" +
+                        $"\nAдрес - {c.Addrress}"
                         );
 
                     Console.WriteLine(new String('-', 20));
