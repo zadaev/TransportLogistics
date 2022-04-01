@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+﻿
 namespace TransportLogistika.BL
 {
     public class Driver
@@ -18,21 +13,8 @@ namespace TransportLogistika.BL
         public string Country { get; set; } = "";
         public string Region { get; set; } = "";
         public string Address { get; set; } = "";
-  
+
         public List<Truck> Truck { get; set; } = new();
-
-        public uint UserId { get; set; }
-        public User? User { get; set; }
-
-        public override string ToString()
-        {
-            return $"Имя - {FistName}" +
-                $" \nФамилия - {LastName}" +
-                $" \nНомер Телефона - {PhoneNumber_1}" +
-                $" \nEmail - {Email}" +
-                $" \nКатегория - {Category}" +
-                $" \nСтрана - {Address}";
-        }
 
     }
 }

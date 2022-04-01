@@ -13,5 +13,7 @@ namespace TransportLogistika.BL
         public string CurrentRegion { get; set; } = "";
         public string Address { get; set; } = "";
 
+        public int OwnerId { get; set; }
+        public List<Driver>? Driver { get; set; } = new();
     }
 }
