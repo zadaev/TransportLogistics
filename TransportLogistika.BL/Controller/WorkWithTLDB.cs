@@ -11,19 +11,19 @@ namespace TransportLogistika.BL
         /// </summary>
         public static void GMethod()
         {
-            Console.WriteLine("\n1.Создать \n2.Поиск \n3.Изменить \n4.Удалить");
+            Console.WriteLine("\n1.Создать \n2.Поиск \n3.Удалить");
 
             switch (Console.ReadLine())
             {
                 case "1": Create(); break;
                 case "2": Read(); break;
-                case "3": Update(); break;
-                case "4": Delete(); break;
+                case "3": Delete(); break;
             }
 
         }
 
         // Navigation Methods
+
         public static void Create()
         {
             Create create = new Create();
@@ -54,17 +54,28 @@ namespace TransportLogistika.BL
                 case "3": read.Customer(); break;
                 case "4": read.Truck(); break;
                 default:
-                    Console.WriteLine("Введите чимло(1, 2 или 3)");
+                    Console.WriteLine("Введите чимло(1, 2, 3 или 4)");
                     break;
             }
         }
-        public static void Update()
-        {
-            throw new ArgumentNullException("Изменить не работаеть", nameof(Update));
-        }
         public static void Delete()
         {
-            throw new ArgumentNullException("Удалить не работаеть", nameof(Delete));
+            Delate del = new Delate();
+
+            Console.WriteLine("Кого удалить? \n1.Водитель \n2.Компания \n3.Клиент \n4.Truck");
+            var answer = Console.ReadLine();
+
+            switch (answer)
+            {
+                case "1": del.Driver(); break;
+                case "2": del.Service(); break;
+                case "3": del.Customer(); break;
+                case "4": del.Truck(); break;
+                default:
+                    Console.WriteLine("Введите чимло(1, 2, 3 или 4)");
+                    break;
+            }
+
         }
     }
 
@@ -355,7 +366,6 @@ namespace TransportLogistika.BL
         }
     }
 
-
     /// <summary>
     /// Search by country
     /// </summary>
@@ -427,6 +437,9 @@ namespace TransportLogistika.BL
             Console.WriteLine("С какого региона должен быть Truck");
             var region = Console.ReadLine();
 
+            if (string.IsNullOrWhiteSpace(region))
+                throw new ArgumentNullException("Названия региона не может быть пустым");
+
             using (TLContext db = new TLContext())
             {
                 var truck = db.Truck.Where(t => t.CurrentRegion.Contains(region!));
@@ -481,22 +494,79 @@ namespace TransportLogistika.BL
         }
     }
 
-
-    public class Update
-    {
-        public void UpdateDriver() { }
-        public void UpdateService() { }
-        public void UpdateTruck() { }
-        public void UpdateCustomer() { }
-    }
-
+    /// <summary>
+    /// Delete by phone number or car number
+    /// </summary>
     public class Delate
     {
-        public void DelateUser() { }
-        public void DelateDriver() { }
-        public void DeleteService() { }
-        public void DeleteTrukc() { }
-        public void DeleteCustomer() { }
+        public void Driver()
+        {
+            Console.WriteLine("Введите номер телефона");
+            var phone = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(phone))
+                throw new ArgumentNullException("Номер телефона не может быть пустым");
+
+            using (TLContext db = new TLContext())
+            {
+                var driver = db.Driver.Where(d => d.PhoneNumber_1 == phone).FirstOrDefault();
+
+                db.Driver.Remove(driver!);
+                db.SaveChanges();
+                Console.WriteLine("Дыннае успешно удалены");
+            }
+        }
+        public void Service()
+        {
+            Console.WriteLine("Введите номер телефона");
+            var phone = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(phone))
+                throw new ArgumentNullException("Номер телефона не может быть пустым");
+
+            using (TLContext db = new TLContext())
+            {
+                var service = db.Service.Where(d => d.PhoneNumber_1 == phone).FirstOrDefault();
+
+                db.Service.Remove(service!);
+                db.SaveChanges();
+                Console.WriteLine("Дыннае успешно удалены");
+            }
+        }
+        public void Truck() 
+        {
+            Console.WriteLine("Введите номер машины");
+            var carNumber = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(carNumber))
+                throw new ArgumentNullException("Номер машины не может быть пустым");
+
+            using (TLContext db = new TLContext())
+            {
+                var truck = db.Truck.Where(d => d.CarNumber == carNumber).FirstOrDefault();
+
+                db.Truck.Remove(truck!);
+                db.SaveChanges();
+                Console.WriteLine("Дыннае успешно удалены");
+            }
+        }
+        public void Customer() 
+        {
+            Console.WriteLine("Введите номер телефона");
+            var phone = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(phone))
+                throw new ArgumentNullException("Номер телефона не может быть пустым");
+
+            using (TLContext db = new TLContext())
+            {
+                var customer = db.Customer.Where(d => d.PhoneNumber_1 == phone).FirstOrDefault();
+
+                db.Customer.Remove(customer!);
+                db.SaveChanges();
+                Console.WriteLine("Дыннае успешно удалены");
+            }
+        }
 
     }
 }

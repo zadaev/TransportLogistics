@@ -20,9 +20,6 @@ namespace TransportLogistika.CMD
                 Console.ReadKey();
                 Console.Clear();
             }
-
-
-
         }
     }
 }
