@@ -3,7 +3,7 @@ namespace TransportLogistika.BL
 {
     public class Customer
     {
-        public int Id { get; set; }
+        public int Id { get; }
         public string FirstName { get; set; } = "";
         public string LastName { get; set; } = "";
         public string PhoneNumber_1 { get; set; } = "";

@@ -6,6 +6,9 @@ namespace TransportLogistika.BL
     /// </summary>
     public class WorkWithTLDB
     {
+        public delegate void ActionHandler(string message);
+        public static event ActionHandler? Notify;
+
         /// <summary>
         /// Choose what to do
         /// </summary>
@@ -22,22 +25,300 @@ namespace TransportLogistika.BL
 
         }
 
-        // Navigation Methods
-
         public static void Create()
         {
-            Create create = new Create();
             Console.WriteLine("Кем вы являетесь? \n1.Водитель \n2.Компания \n3.Клиент \n4.Truck");
-            var answer = Console.ReadLine();
+            string? whoIs = Console.ReadLine();
 
-            switch (answer)
+            switch (whoIs)
             {
-                case "1": create.Driver(); break;
-                case "2": create.Service(); break;
-                case "3": create.Customer(); break;
-                case "4": create.Truck(); break;
+                case "1":
+                    {
+                        #region Принимаем данные
+
+                        Console.WriteLine("Введите имя");
+                        var FistName = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(FistName))
+                            throw new ArgumentNullException("Имя не может быть пустым или null", nameof(FistName));
+
+                        Console.WriteLine("Введите фамилию");
+                        var LastName = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(LastName))
+                            throw new ArgumentNullException("Фамилия не может быть пустым или null", nameof(LastName));
+
+                        Console.WriteLine("Введите номер телефона");
+                        var PhoneNumber_1 = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(PhoneNumber_1))
+                            throw new ArgumentNullException("Номер телефона не может быть пустым", nameof(PhoneNumber_1));
+
+                        Console.WriteLine("Введите Email");
+                        var Email = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(Email))
+                            throw new ArgumentNullException("Email не может быть пустым", nameof(Email));
+
+
+                        Console.WriteLine("Введите категорию");
+                        var Category = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(Category))
+                            throw new ArgumentNullException("Категория не может быть пустым", nameof(Category));
+
+                        Console.WriteLine("Введите страну");
+                        var Country = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(Country))
+                            throw new ArgumentNullException("Страна не может быть пустым", nameof(Country));
+
+                        Console.WriteLine("Введите с какого областя вы");
+                        var Region = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(Region))
+                            throw new ArgumentNullException("Область не может быть пустым", nameof(Region));
+
+                        Console.WriteLine("Если вы добавили машину закрепите его в свой аккаунт \nдля этого отправьте номер машины(Если не добавляли нажмите Enter)");
+                        string? numberCar = Console.ReadLine();
+
+                        #endregion
+
+                        using (TLContext db = new TLContext())
+                        {
+                            var truck = db.Truck.Where(t => t.CarNumber == numberCar).ToList();
+                            var driver = new Driver
+                            {
+                                FistName = FistName,
+                                LastName = LastName,
+                                PhoneNumber_1 = PhoneNumber_1,
+                                Email = Email,
+                                Category = Category,
+                                Country = Country,
+                                Region = Region,
+                                Address = Country + " " + Region,
+                                Truck = truck
+                            };
+
+                            db.Driver.Add(driver);
+                            db.SaveChanges();
+
+                            Notify?.Invoke($"Регистратция прошла успешно {FistName}");
+                        }
+                    }
+                    break;
+
+                case "2":
+                    {
+                        #region Принимаем данные
+
+                        Console.WriteLine("Введите название компание");
+                        string? ServiceName = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(ServiceName))
+                            throw new ArgumentNullException("Названия компание не может быть пустым", nameof(ServiceName));
+
+                        Console.WriteLine("Введите категорию");
+                        string? ServiceCategory = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(ServiceCategory))
+                            throw new ArgumentNullException("Категория не может быть пустым", nameof(ServiceCategory));
+
+                        Console.WriteLine("Введите номер телефона");
+                        string? ServicePhoneNumber_1 = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(ServicePhoneNumber_1))
+                            throw new ArgumentNullException("Номер телефона не может быть пустым", nameof(ServicePhoneNumber_1));
+
+                        Console.WriteLine("Введите вебсайт (Если не имеется нажмите Enter)");
+                        string? ServiceWebSite = Console.ReadLine();
+
+                        Console.WriteLine("Введите Описанию (Необязательно");
+                        string? ServiceMessage = Console.ReadLine();
+
+                        Console.WriteLine("Введите страну");
+                        string? ServiceCountry = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(ServiceCountry))
+                            throw new ArgumentNullException("Страна не может быть пустым", nameof(ServiceCountry));
+
+                        Console.WriteLine("Введите с какого областя вы");
+                        string? ServiceRegion = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(ServiceRegion))
+                            throw new ArgumentNullException("Область не может быть пустым", nameof(ServiceRegion));
+
+                        #endregion
+
+                        using (TLContext db = new TLContext())
+                        {
+                            Service service = new Service
+                            {
+                                Name = ServiceName!,
+                                Category = ServiceCategory!,
+                                PhoneNumber_1 = ServicePhoneNumber_1!,
+                                Website = ServiceWebSite ?? "Неизвестно",
+                                Message = ServiceMessage ?? "Неизвестно",
+                                Country = ServiceCountry!,
+                                Region = ServiceRegion!,
+                                Addrress = ServiceCountry + ", " + ServiceRegion,
+                            };
+                            db.Service.Add(service);
+                            db.SaveChanges();
+
+                            Notify?.Invoke($"Регистратция прошла успешно {ServiceName}");
+                        }
+                    }
+                    break;
+
+                case "3":
+                    {
+                        #region Принимаем данные
+
+                        Console.WriteLine("Введите Имю");
+                        string? CustomerFistName = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CustomerFistName))
+                            throw new ArgumentNullException("Имя не может быть пустым", nameof(CustomerFistName));
+
+                        Console.WriteLine("Введите Фамилию");
+                        string? CustomerLastName = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CustomerLastName))
+                            throw new ArgumentNullException("Фамилия не может быть пустым", nameof(CustomerLastName));
+
+                        Console.WriteLine("Введите номер телефона");
+                        string? CustomerPhoneNumber_1 = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CustomerPhoneNumber_1))
+                            throw new ArgumentNullException("Номер телефона не может быть пустым", nameof(CustomerPhoneNumber_1));
+
+                        Console.WriteLine("Введите Email");
+                        string? CustomerEmail = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CustomerEmail))
+                            throw new ArgumentNullException("Email не может быть пустым", nameof(CustomerEmail));
+
+                        Console.WriteLine("Введите что ищете");
+                        string? CustomerMessage = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CustomerMessage))
+                            throw new ArgumentNullException("Это поля не может быть пустым", nameof(CustomerMessage));
+
+                        Console.WriteLine("Введите страну");
+                        string? CustomerCountry = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CustomerCountry))
+                            throw new ArgumentNullException("Страна не может быть пустым", nameof(CustomerCountry));
+
+                        Console.WriteLine("Введите с какого областя вы");
+                        string? CustomerRegion = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CustomerRegion))
+                            throw new ArgumentNullException("Регион не может быть пустым", nameof(CustomerRegion));
+
+                        #endregion
+
+                        using (TLContext db = new TLContext())
+                        {
+                            var customer = new Customer
+                            {
+                                FirstName = CustomerFistName!,
+                                LastName = CustomerLastName!,
+                                PhoneNumber_1 = CustomerPhoneNumber_1!,
+                                Email = CustomerEmail!,
+                                Message = CustomerMessage!,
+                                Country = CustomerCountry!,
+                                Region = CustomerRegion!,
+                                Addrress = CustomerCountry + ", " + CustomerRegion
+                            };
+
+                            db.Customer.Add(customer);
+                            db.SaveChanges();
+
+                            Notify?.Invoke($"Регистратция прошла успешно {CustomerFistName}");
+                        }
+                    }
+                    break;
+
+                case "4":
+                    {
+                        #region Принимаем данные
+                        Console.WriteLine("Введите модель");
+                        var CarModel = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CarModel))
+                            throw new ArgumentNullException("Модель не может быть пустым", nameof(CarModel));
+
+                        Console.WriteLine("Введите номер машины");
+                        var CarNumber = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CarNumber))
+                            throw new ArgumentNullException("Номер машины не может быть пустым", nameof(CarNumber));
+
+                        Console.WriteLine("Введите тип");
+                        var MType = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(MType))
+                            throw new ArgumentNullException("Тип не может быть пустым", nameof(MType));
+
+                        Console.WriteLine("Введите категорию");
+                        var CarCategory = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CarCategory))
+                            throw new ArgumentNullException("Категория не может быть пустым", nameof(CarCategory));
+
+                        Console.WriteLine("Введите вес");
+                        double GrossWeight = Convert.ToDouble(Console.ReadLine());
+
+                        if (double.IsNegative(GrossWeight))
+                            throw new ArgumentNullException("Вес не может быть пустым", nameof(GrossWeight));
+
+                        Console.WriteLine("Введите год выхода в формате \"ДД.ММ.ГГГГ\"");
+                        DateTime date = Convert.ToDateTime(Console.ReadLine());
+
+                        if (date < DateTime.Parse("01.01.1950") || date >= DateTime.Now)
+                            throw new ArgumentException("Невозможная дате выхода", nameof(date));
+
+                        Console.WriteLine("Введите регион");
+                        var CarRegion = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(CarRegion))
+                            throw new ArgumentNullException("Регион не может быть пустым", nameof(CarRegion));
+
+                        Console.WriteLine("Если у вас есть аккаунт напишите свой номер телефона (Если нету нажмите Enter)");
+                        string? PhoneNumber = Console.ReadLine();
+
+                        #endregion
+
+                        using (TLContext db = new TLContext())
+                        {
+                            var driver = db.Driver.Where(u => u.PhoneNumber_1 == PhoneNumber).ToList();
+
+                            Truck truck = new Truck
+                            {
+                                CarModel = CarModel!,
+                                CarNumber = CarNumber!,
+                                MType = MType!,
+                                Category = CarCategory!,
+                                GrossWeigh = GrossWeight,
+                                Year = date,
+                                CurrentRegion = CarRegion!,
+                                Address = CarRegion!,
+
+                            };
+                            truck.Driver = driver;
+
+                            db.Truck.Add(truck);
+                            db.SaveChanges();
+
+                            Notify?.Invoke($"Регистратция прошла успешно");
+                        }
+                    }
+                    break;
+
                 default:
-                    Console.WriteLine("Введите чимло(1, 2 или 3)");
+                    Console.WriteLine("Введите чимло(1, 2, 3 или 4)");
                     break;
             }
         }
@@ -82,289 +363,6 @@ namespace TransportLogistika.BL
     /// <summary>
     /// Create Users and Truck
     /// </summary>
-    public class Create
-    {
-        public void Driver()
-        {
-            #region Принимаем данные
-
-            Console.WriteLine("Введите имя");
-            var FistName = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(FistName))
-                throw new ArgumentNullException("Имя не может быть пустым или null", nameof(FistName));
-
-            Console.WriteLine("Введите фамилию");
-            var LastName = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(LastName))
-                throw new ArgumentNullException("Фамилия не может быть пустым или null", nameof(LastName));
-
-            Console.WriteLine("Введите номер телефона");
-            var PhoneNumber_1 = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(PhoneNumber_1))
-                throw new ArgumentNullException("Номер телефона не может быть пустым", nameof(PhoneNumber_1));
-
-            Console.WriteLine("Введите Email");
-            var Email = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Email))
-                throw new ArgumentNullException("Email не может быть пустым", nameof(Email));
-
-
-            Console.WriteLine("Введите категорию");
-            var Category = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Category))
-                throw new ArgumentNullException("Категория не может быть пустым", nameof(Category));
-
-            Console.WriteLine("Введите страну");
-            var Country = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Country))
-                throw new ArgumentNullException("Страна не может быть пустым", nameof(Country));
-
-            Console.WriteLine("Введите с какого областя вы");
-            var Region = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Region))
-                throw new ArgumentNullException("Область не может быть пустым", nameof(Region));
-
-            Console.WriteLine("Если вы добавили машину закрепите его в свой аккаунт \nдля этого отправьте номер машины(Если не добавляли нажмите Enter)");
-            string? numberCar = Console.ReadLine();
-
-            #endregion
-
-            using (TLContext db = new TLContext())
-            {
-                var truck = db.Truck.Where(t => t.CarNumber == numberCar).ToList();
-                var driver = new Driver
-                {
-                    FistName = FistName,
-                    LastName = LastName,
-                    PhoneNumber_1 = PhoneNumber_1,
-                    Email = Email,
-                    Category = Category,
-                    Country = Country,
-                    Region = Region,
-                    Address = Country + " " + Region,
-                    Truck = truck
-                };
-
-                db.Driver.Add(driver);
-                db.SaveChanges();
-
-                Console.WriteLine("Регистратция прошла успешно.");
-            }
-        }
-
-        public void Service()
-        {
-            #region Принимаем данные
-
-            Console.WriteLine("Введите название компание");
-            var Name = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Name))
-                throw new ArgumentNullException("Названия компание не может быть пустым", nameof(Name));
-
-            Console.WriteLine("Введите категорию");
-            var Category = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Category))
-                throw new ArgumentNullException("Категория не может быть пустым", nameof(Category));
-
-            Console.WriteLine("Введите номер телефона");
-            var PhoneNumber_1 = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(PhoneNumber_1))
-                throw new ArgumentNullException("Номер телефона не может быть пустым", nameof(PhoneNumber_1));
-
-            Console.WriteLine("Введите вебсайт(Если не имеется нажмите Enter)");
-            var WebSite = Console.ReadLine();
-
-            Console.WriteLine("Введите Описанию");
-            var Message = Console.ReadLine();
-
-            Console.WriteLine("Введите страну");
-            var Country = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Country))
-                throw new ArgumentNullException("Страна не может быть пустым", nameof(Country));
-
-            Console.WriteLine("Введите с какого областя вы");
-            var Region = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Region))
-                throw new ArgumentNullException("Область не может быть пустым", nameof(Region));
-
-            #endregion
-
-            using (TLContext db = new TLContext())
-            {
-                Service service = new Service
-                {
-                    Name = Name!,
-                    Category = Category!,
-                    PhoneNumber_1 = PhoneNumber_1!,
-                    Website = WebSite!,
-                    Message = Message!,
-                    Country = Country!,
-                    Region = Region!,
-                    Addrress = Country + ", " + Region,
-                };
-                db.Service.Add(service);
-                db.SaveChanges();
-
-                Console.WriteLine("Регистратция прошла успешно.");
-            }
-        }
-
-        public void Truck()
-        {
-            #region Принимаем данные
-            Console.WriteLine("Введите модель");
-            var CarModel = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(CarModel))
-                throw new ArgumentNullException("Модель не может быть пустым", nameof(CarModel));
-
-            Console.WriteLine("Введите номер машины");
-            var CarNumber = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(CarNumber))
-                throw new ArgumentNullException("Номер машины не может быть пустым", nameof(CarNumber));
-
-            Console.WriteLine("Введите тип");
-            var MType = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(MType))
-                throw new ArgumentNullException("Тип не может быть пустым", nameof(MType));
-
-            Console.WriteLine("Введите категорию");
-            var CarCategory = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(CarCategory))
-                throw new ArgumentNullException("Категория не может быть пустым", nameof(CarCategory));
-
-            Console.WriteLine("Введите вес");
-            double GrossWeight = Convert.ToDouble(Console.ReadLine());
-
-            if (double.IsNegative(GrossWeight))
-                throw new ArgumentNullException("Вес не может быть пустым", nameof(GrossWeight));
-
-            Console.WriteLine("Введите год выхода в формате \"ДД.ММ.ГГГГ\"");
-            DateTime date = Convert.ToDateTime(Console.ReadLine());
-
-            if (date < DateTime.Parse("01.01.1950") || date >= DateTime.Now)
-                throw new ArgumentException("Невозможная дате выхода", nameof(date));
-
-            Console.WriteLine("Введите регион");
-            var CarRegion = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(CarRegion))
-                throw new ArgumentNullException("Регион не может быть пустым", nameof(CarRegion));
-
-            Console.WriteLine("Если у вас есть аккаунт напишите свой номер телефона (Если нету нажмите Enter)");
-            string? PhoneNumber = Console.ReadLine();
-
-            #endregion
-
-            using (TLContext db = new TLContext())
-            {
-                var driver = db.Driver.Where(u => u.PhoneNumber_1 == PhoneNumber).ToList();
-
-                Truck truck = new Truck
-                {
-                    CarModel = CarModel!,
-                    CarNumber = CarNumber!,
-                    MType = MType!,
-                    Category = CarCategory!,
-                    GrossWeigh = GrossWeight,
-                    Year = date,
-                    CurrentRegion = CarRegion!,
-                    Address = CarRegion!,
-
-                };
-                truck.Driver = driver;
-
-                db.Truck.Add(truck);
-                db.SaveChanges();
-                Console.WriteLine("Регистратция прошла успешно.");
-            }
-
-        }
-
-        public void Customer()
-        {
-            #region Принимаем данные
-
-            Console.WriteLine("Введите Имю");
-            var FistName = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(FistName))
-                throw new ArgumentNullException("Имя не может быть пустым", nameof(FistName));
-
-            Console.WriteLine("Введите Фамилию");
-            var LastName = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(LastName))
-                throw new ArgumentNullException("Фамилия не может быть пустым", nameof(LastName));
-
-            Console.WriteLine("Введите номер телефона");
-            var PhoneNumber_1 = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(PhoneNumber_1))
-                throw new ArgumentNullException("Номер телефона не может быть пустым", nameof(PhoneNumber_1));
-
-            Console.WriteLine("Введите Email");
-            var Email = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Email))
-                throw new ArgumentNullException("Email не может быть пустым", nameof(Email));
-
-            Console.WriteLine("Введите что ищете");
-            var Message = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Message))
-                throw new ArgumentNullException("Это поля не может быть пустым", nameof(Message));
-
-            Console.WriteLine("Введите страну");
-            var Country = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Country))
-                throw new ArgumentNullException("Страна не может быть пустым", nameof(Country));
-
-            Console.WriteLine("Введите с какого областя вы");
-            var Region = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(Region))
-                throw new ArgumentNullException("Регион не может быть пустым", nameof(Region));
-
-            #endregion
-
-            using (TLContext db = new TLContext())
-            {
-                var customer = new Customer
-                {
-                    FirstName = FistName!,
-                    LastName = LastName!,
-                    PhoneNumber_1 = PhoneNumber_1!,
-                    Email = Email!,
-                    Message = Message!,
-                    Country = Country!,
-                    Region = Region!,
-                    Addrress = Country + ", " + Region
-                };
-
-                db.Customer.Add(customer);
-                db.SaveChanges();
-
-                Console.WriteLine("Регистратция прошла успешно.");
-            }
-        }
-    }
 
     /// <summary>
     /// Search by country
@@ -533,7 +531,7 @@ namespace TransportLogistika.BL
                 Console.WriteLine("Дыннае успешно удалены");
             }
         }
-        public void Truck() 
+        public void Truck()
         {
             Console.WriteLine("Введите номер машины");
             var carNumber = Console.ReadLine();
@@ -550,7 +548,7 @@ namespace TransportLogistika.BL
                 Console.WriteLine("Дыннае успешно удалены");
             }
         }
-        public void Customer() 
+        public void Customer()
         {
             Console.WriteLine("Введите номер телефона");
             var phone = Console.ReadLine();
